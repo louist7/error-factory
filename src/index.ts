@@ -1,20 +1,55 @@
-// Please read the README for instructions on what to do.
 
-function createErrorMethods(config) {
- // TODO: your function implementation here
+import * as console from "console";
+import {Error} from "./Error";
+import {ErrorMethodConfig} from "./ErrorMethodConfig";
+
+const config: Array<ErrorMethodConfig> = [
+    {
+        methodName: "badRequest",
+        statusCode: 400,
+        errorMessage: "Bad Request"
+    },
+    {
+        methodName: "notFound",
+        statusCode: 404,
+        errorMessage: "Not Found"
+    }
+];
+
+function createErrorMethods(config: Array<ErrorMethodConfig>): {[key:string]: Function} {
+    let errorMethods: {[key:string]: Function} = {};
+
+    for (let configItem in config) {
+        let currentConfig: ErrorMethodConfig = config[configItem];
+
+        type errorMethodObj = {
+            [key: string]: Function
+        }
+
+        let errorMethod: errorMethodObj = {};
+        errorMethod[currentConfig.methodName] = (errorMessage: string|null): Error => {
+            if (typeof errorMessage === "string") {
+                currentConfig.errorMessage = errorMessage;
+            }
+            return new Error(currentConfig)
+        };
+
+        errorMethods = {...errorMethods, ...errorMethod}
+    }
+
+    return errorMethods;
 }
 
-const errorMethods = createErrorMethods(/* TODO: your config here */);
+const errorMethods = createErrorMethods(config);
 const { badRequest, notFound } = errorMethods;
 
-// Example usage: Bad Request
-badRequest();
-badRequest("Overriden bad request message.");
+let result: Error = badRequest('override the error message');
+console.log(typeof result)
 
-// Example usage: Not Found
-notFound();
-notFound("This is an override message for the 'Not Found' method.");
+// result.statusCode = 200;
+console.log(result)
 
-// Example usage: Gateway Timeout
-errorMethods.gatewayTimeout();
-errorMethods.gatewayTimeout("Overriding the default message.");
+
+result = notFound();
+console.log(result)
+
