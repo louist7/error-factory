@@ -49,6 +49,6 @@ let result: Error = badRequest('override the error message');
 console.log(result)
 
 
-let notFoundResult = notFound();
+let notFoundResult: Error = notFound();
 console.log(notFoundResult)
 
