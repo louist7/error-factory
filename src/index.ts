@@ -44,12 +44,11 @@ const errorMethods = createErrorMethods(config);
 const { badRequest, notFound } = errorMethods;
 
 let result: Error = badRequest('override the error message');
-console.log(typeof result)
 
 // result.statusCode = 200;
 console.log(result)
 
 
-result = notFound();
-console.log(result)
+let notFoundResult = notFound();
+console.log(notFoundResult)
 
